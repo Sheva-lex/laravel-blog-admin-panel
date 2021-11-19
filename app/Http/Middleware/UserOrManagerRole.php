@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserOrManagerRole
 {
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, Closure $next)
     {
         if (Auth::check() && (Auth::user()->isUser || Auth::user()->isManager)) {
             return $next($request);

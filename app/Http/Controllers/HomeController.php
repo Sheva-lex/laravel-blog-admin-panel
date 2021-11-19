@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -19,12 +17,12 @@ class HomeController extends Controller
         }
     }
 
-    public function index(): Application|Factory|View
+    public function index(): View
     {
         return view('main');
     }
 
-    public function cabinet(): Application|Factory|View
+    public function cabinet(): View
     {
         return view('cabinet');
     }

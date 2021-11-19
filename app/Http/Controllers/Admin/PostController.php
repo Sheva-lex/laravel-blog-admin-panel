@@ -7,8 +7,6 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Traits\MadeInternalLinks;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,13 +15,13 @@ class PostController extends Controller
 {
     use MadeInternalLinks;
 
-    public function index(): Application|Factory|View
+    public function index(): View
     {
         $posts = Post::get();
         return view('admin.posts.index', compact('posts'));
     }
 
-    public function create(): Application|Factory|View
+    public function create(): View
     {
         return view('admin.posts.new_edit');
     }
@@ -41,7 +39,7 @@ class PostController extends Controller
             ->with('success', "Новину \"{$post->title}\" успішно створено. Добавте теги");
     }
 
-    public function edit(Post $post): Application|Factory|View
+    public function edit(Post $post): View
     {
         return view('admin.posts.new_edit', compact('post'));
     }

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -16,7 +14,7 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(): Application|Factory|View
+    public function index(): View
     {
         $usersCount = User::count();
         $postsCount = Post::count();
