@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use App\Models\Tag;
+use App\Traits\MadeInternalLinks;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +15,7 @@ use Illuminate\View\View;
 
 class PostController extends Controller
 {
+    use MadeInternalLinks;
 
     public function index(): Application|Factory|View
     {
@@ -28,9 +31,14 @@ class PostController extends Controller
     public function store(PostRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $tags = Tag::get();
+        $transformed = $this->transformNewPostTextToLinks($tags, $validated['text']);
+        if ($transformed['status']) {
+            $validated['text'] = $transformed['text'];
+        }
         $post = Post::create($validated);
         return redirect()->route('admin.posts.edit', ['post' => $post])
-            ->with('success', "Новину \"{$request->title}\" успішно створено. Добавте теги");
+            ->with('success', "Новину \"{$post->title}\" успішно створено. Добавте теги");
     }
 
     public function edit(Post $post): Application|Factory|View

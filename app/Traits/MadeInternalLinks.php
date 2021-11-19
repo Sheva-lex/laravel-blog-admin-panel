@@ -2,6 +2,10 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Collection;
+
+use function PHPUnit\Framework\isEmpty;
+
 trait MadeInternalLinks
 {
     public function removeLink(string $tag, ?string $text, int $id): array
@@ -24,5 +28,20 @@ trait MadeInternalLinks
             }
         }
         return ['text' => implode(" ", $words), 'status' => $transformedStatus];
+    }
+
+    public function transformNewPostTextToLinks(?Collection $tags, ?string $text): array
+    {
+        $replaceAmount = 0;
+        $transformedText = $text;
+        if (count($tags)) {
+            foreach ($tags as $tag) {
+                $href = asset('posts/' . $tag->post_id);
+                $tagWithLink = "<a href=\"{$href}\">{$tag->name}</a>";
+                $transformedText = preg_replace("~{$tag->name}~", $tagWithLink, $transformedText, -1, $replaceCount);
+                $replaceAmount += $replaceCount;
+            }
+        }
+        return ['text' => $transformedText, 'status' => (bool)$replaceAmount];
     }
 }
