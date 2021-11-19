@@ -4,8 +4,6 @@ namespace App\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
 
-use function PHPUnit\Framework\isEmpty;
-
 trait MadeInternalLinks
 {
     public function removeLink(string $tag, ?string $text, int $id): array
