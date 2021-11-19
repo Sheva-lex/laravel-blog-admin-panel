@@ -20,7 +20,7 @@ class TagController extends Controller
         $posts = Post::get();
         foreach ($posts as $post) {
             $transformed = $this->transformToLink($tag->name, $post->text, $tag->post->id);
-            if ($transformed['status'] === 1) {
+            if ($transformed['status']) {
                 Post::where('id', $post->id)->update(['text' => $transformed['text']]);
             }
         }
