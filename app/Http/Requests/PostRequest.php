@@ -13,9 +13,28 @@ class PostRequest extends FormRequest
 
     public function rules(): array
     {
+        $postId = $this->post ? $this->post->id : '';
         return [
-            'title' => ['required', 'string', 'max:191', 'unique:posts'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['nullable', 'string', 'max:191', 'unique:tags,name'],
+            'title' => ['required', 'string', 'max:191', 'unique:posts,title,' . $postId],
             'text' => ['nullable', 'string'],
+        ];
+    }
+
+    public function prepareForValidation()
+    {
+        if ($tags = $this->get('tags')) {
+            $this->merge([
+                'tags' => explode(",", $tags),
+            ]);
+        }
+    }
+
+    public function messages(): array
+    {
+        return [
+            'tags.*.unique' => 'Тег :input вже існує',
         ];
     }
 }

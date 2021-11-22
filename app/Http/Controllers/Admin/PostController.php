@@ -8,7 +8,6 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Traits\MadeInternalLinks;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PostController extends Controller
@@ -17,7 +16,7 @@ class PostController extends Controller
 
     public function index(): View
     {
-        $posts = Post::get();
+        $posts = Post::with('tags')->get();
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -34,9 +33,23 @@ class PostController extends Controller
         if ($transformed['status']) {
             $validated['text'] = $transformed['text'];
         }
-        $post = Post::create($validated);
-        return redirect()->route('admin.posts.edit', ['post' => $post])
-            ->with('success', "Новину \"{$post->title}\" успішно створено. Добавте теги");
+        $newPost = Post::create($validated);
+        if ($postTags = $validated['tags']) {
+            foreach ($postTags as $tag) {
+                $newPost->tags()->create([
+                    'name' => $tag,
+                ]);
+                $posts = Post::get();
+                foreach ($posts as $post) {
+                    $transformed = $this->transformToLink($tag, $post->text, $newPost->id);
+                    if ($transformed['status']) {
+                        $post->update(['text' => $transformed['text']]);
+                    }
+                }
+            }
+        }
+        return redirect()->route('admin.posts.index')
+            ->with('success', "Новину \"{$newPost->title}\" успішно створено.");
     }
 
     public function edit(Post $post): View
@@ -44,13 +57,29 @@ class PostController extends Controller
         return view('admin.posts.new_edit', compact('post'));
     }
 
-    public function update(Request $request, Post $post): RedirectResponse
+    public function update(PostRequest $request, Post $post): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:191', 'unique:posts,title,' . $post->id],
-            'text' => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
+        $tags = Tag::get();
+        $transformed = $this->transformExistingPostTextToLinks($tags, $validated['text']);
+        if ($transformed['status']) {
+            $validated['text'] = $transformed['text'];
+        }
         $post->update($validated);
+        if ($newPostTags = $validated['tags']) {
+            foreach ($newPostTags as $tag) {
+                $post->tags()->create([
+                    'name' => $tag,
+                ]);
+                $posts = Post::get();
+                foreach ($posts as $p) {
+                    $transformed = $this->transformToLink($tag, $p->text, $post->id);
+                    if ($transformed['status']) {
+                        $p->update(['text' => $transformed['text']]);
+                    }
+                }
+            }
+        }
         return redirect()->route('admin.posts.index')
             ->with('success', "Новину \"{$post->title}\" успішно оновлено");
     }

@@ -25,6 +25,9 @@
                             Назва
                         </th>
                         <th>
+                            Теги
+                        </th>
+                        <th>
                             Створено
                         </th>
                         <th>
@@ -37,6 +40,30 @@
                         <tr>
                             <td>{{ $post->id }}</td>
                             <td>{{ $post->title }}</td>
+                            <td>
+                                <div class="d-flex justify-content-start flex-wrap">
+                                    @foreach($post->tags as $tag)
+                                        <div class="d-flex justify-content-start bg-primary m-1">
+                                            <div class="pl-1">
+                                                {{ $tag->name }}
+                                            </div>
+                                            <div>
+                                                <form
+                                                    action="{{ route('admin.tags.destroy', ['tag' => $tag]) }}"
+                                                    method="post" class="">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm"
+                                                            name="tag_delete_form"
+                                                            onclick="return confirm('Підтвердіть видалення')">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </td>
                             <td>{{ $post->created_at }}</td>
                             <td>
                                 <div class="row">
