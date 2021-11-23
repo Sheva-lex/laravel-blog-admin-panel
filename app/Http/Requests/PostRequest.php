@@ -16,7 +16,7 @@ class PostRequest extends FormRequest
         $postId = $this->post ? $this->post->id : '';
         return [
             'tags' => ['nullable', 'array'],
-            'tags.*' => ['nullable', 'string', 'max:191', 'unique:tags,name'],
+            'tags.*' => ['nullable', 'string', 'max:191', 'unique:tags,name', 'regex:/^\S*$/u'],
             'title' => ['required', 'string', 'max:191', 'unique:posts,title,' . $postId],
             'text' => ['nullable', 'string'],
         ];
@@ -35,6 +35,7 @@ class PostRequest extends FormRequest
     {
         return [
             'tags.*.unique' => 'Тег :input вже існує',
+            'tags.*.regex' => 'Тег :input містить пробіл, що не допустимо',
         ];
     }
 }

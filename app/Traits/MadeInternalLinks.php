@@ -10,7 +10,7 @@ trait MadeInternalLinks
     {
         $href = asset('posts/' . $id);
         $tagWithLink = "<a href=\"{$href}\">{$tag}</a>";
-        $transformedText = preg_replace("~{$tagWithLink}~i", $tag, $text, -1, $replaceCount);
+        $transformedText = preg_replace("~{$tagWithLink}~u", $tag, $text, -1, $replaceCount);
         return ['text' => $transformedText, 'status' => (bool)$replaceCount];
     }
 
@@ -18,7 +18,7 @@ trait MadeInternalLinks
     {
         $href = asset('posts/' . $id);
         $tagWithLink = "<a href=\"{$href}\">{$tag}</a>";
-        $transformedText = preg_replace("~{$tag}~i", $tagWithLink, $text, -1, $replaceCount);
+        $transformedText = preg_replace("~\b{$tag}\b~u", $tagWithLink, $text, -1, $replaceCount);
         return ['text' => $transformedText, 'status' => (bool)$replaceCount];
     }
 
@@ -30,7 +30,7 @@ trait MadeInternalLinks
             foreach ($tags as $tag) {
                 $href = asset('posts/' . $tag->post_id);
                 $tagWithLink = "<a href=\"{$href}\">{$tag->name}</a>";
-                $transformedText = preg_replace("~{$tag->name}~i", $tagWithLink, $transformedText, -1, $replaceCount);
+                $transformedText = preg_replace("~\b{$tag->name}\b~u", $tagWithLink, $transformedText, -1, $replaceCount);
                 $replaceAmount += $replaceCount;
             }
         }
@@ -45,12 +45,12 @@ trait MadeInternalLinks
             foreach ($tags as $tag) {
                 $href = asset('posts/' . $tag->post_id);
                 $tagWithLink = "<a href=\"{$href}\">{$tag->name}</a>";
-                $transformedText = preg_replace("~{$tagWithLink}~i", $tag->name, $transformedText, -1, $replaceCount);
+                $transformedText = preg_replace("~{$tagWithLink}~u", $tag->name, $transformedText, -1, $replaceCount);
             }
             foreach ($tags as $tag) {
                 $href = asset('posts/' . $tag->post_id);
                 $tagWithLink = "<a href=\"{$href}\">{$tag->name}</a>";
-                $transformedText = preg_replace("~{$tag->name}~i", $tagWithLink, $transformedText, -1, $replaceCount);
+                $transformedText = preg_replace("~\b{$tag->name}\b~u", $tagWithLink, $transformedText, -1, $replaceCount);
                 $replaceAmount += $replaceCount;
             }
         }
