@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 
 class HomeController extends Controller
 {
@@ -15,11 +14,6 @@ class HomeController extends Controller
         if (auth()->user()->isManager || auth()->user()->isUser) {
             return redirect()->route('cabinet');
         }
-    }
-
-    public function index(): View
-    {
-        return view('main');
     }
 
     public function cabinet(): View
