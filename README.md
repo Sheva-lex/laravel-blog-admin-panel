@@ -3,7 +3,7 @@
 
 ## About the project
 
-- __The ability to add, edit and delete news__
+- __The ability to add, edit and delete news in Admin panel__
     - _data to fill in the news:_
         - _name;_
         - _tags (words) for linking between articles (each tag is composed
@@ -19,6 +19,8 @@
           ordinary word or phrase);_
         - _news text;_
     - _when deleting news - be sure to confirm the action_
+- __Made showing all posts on the main page and one post__
+
 ## How to use
 
 - Clone the repository with git clone
