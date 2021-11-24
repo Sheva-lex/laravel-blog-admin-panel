@@ -41,9 +41,11 @@ class PostController extends Controller
                 ]);
                 $posts = Post::get();
                 foreach ($posts as $post) {
-                    $transformed = $this->transformToLink($tag, $post->text, $newPost->id);
-                    if ($transformed['status']) {
-                        $post->update(['text' => $transformed['text']]);
+                    if ($newPost->id != $post->id) {
+                        $transformed = $this->transformToLink($tag, $post->text, $newPost->id);
+                        if ($transformed['count']) {
+                            $post->update(['text' => $transformed['text']]);
+                        }
                     }
                 }
             }
@@ -61,7 +63,7 @@ class PostController extends Controller
     {
         $validated = $request->validated();
         $tags = Tag::get();
-        $transformed = $this->transformExistingPostTextToLinks($tags, $validated['text']);
+        $transformed = $this->transformExistingPostTextToLinks($tags, $validated['text'], $post->id);
         if ($transformed['status']) {
             $validated['text'] = $transformed['text'];
         }
@@ -73,9 +75,11 @@ class PostController extends Controller
                 ]);
                 $posts = Post::get();
                 foreach ($posts as $p) {
-                    $transformed = $this->transformToLink($tag, $p->text, $post->id);
-                    if ($transformed['status']) {
-                        $p->update(['text' => $transformed['text']]);
+                    if ($post->id != $p->id) {
+                        $transformed = $this->transformToLink($tag, $p->text, $post->id);
+                        if ($transformed['count']) {
+                            $p->update(['text' => $transformed['text']]);
+                        }
                     }
                 }
             }
